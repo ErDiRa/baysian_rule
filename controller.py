@@ -34,3 +34,17 @@ def calc_posterior(p_data_1, p_data_2, data_set_1, data_set_2):
     length_1 = len(data_set_1)
     length_2 = len(data_set_2)
     return (p_data_1[0:] * length_1) / (p_data_1[0:] * length_1 + p_data_2[0:] * length_2)
+
+
+def create_ground_truth_vector(dataset1, dataset2):
+    return concatenate_data_sets(np.zeros(len(dataset1)), np.ones(len(dataset2)))
+
+
+def identify_bin(bin_width,data_point, bin_centers):
+    i = 0
+    while i < len(bin_centers):
+        if data_point  <= bin_centers[i] + (bin_width/2):
+            break
+        i += 1
+
+    return i

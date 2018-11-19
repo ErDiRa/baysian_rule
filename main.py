@@ -1,5 +1,5 @@
 import numpy as np
-import calculations as clc
+import controller as ctrl
 import plots
 from DataObject import DataObject
 
@@ -17,13 +17,13 @@ def main():
     global show_post_plots
     global threshold
 
-    x_seabass = clc.create_sample_population(30, 3, 400)
-    x_salmon = clc.create_sample_population(32, 2, 600)
+    x_seabass = ctrl.create_sample_population(30, 3, 400)
+    x_salmon = ctrl.create_sample_population(32, 2, 600)
 
     # Create the dataset objects
     sea_bass = DataObject(x_seabass)
     salmon = DataObject(x_salmon)
-    total = DataObject(clc.concatenate_data_sets(x_seabass, x_salmon))
+    total = DataObject(ctrl.concatenate_data_sets(x_seabass, x_salmon))
 
     # Check p-sums
     print("----------------------------------------------------------------------------------------------------------")
@@ -44,8 +44,8 @@ def main():
     print("Informative posteriors")
     p_sea_bass = sea_bass.get_probabilities()
     p_salmon = salmon.get_probabilities()
-    post_sea_bass = clc.calc_posterior(p_sea_bass, p_salmon, sea_bass.get_data_set(), salmon.get_data_set())
-    post_salmon = clc.calc_posterior(p_salmon, p_sea_bass, salmon.get_data_set(), sea_bass.get_data_set())
+    post_sea_bass = ctrl.calc_posterior(p_sea_bass, p_salmon, sea_bass.get_data_set(), salmon.get_data_set())
+    post_salmon = ctrl.calc_posterior(p_salmon, p_sea_bass, salmon.get_data_set(), sea_bass.get_data_set())
     print("Seabass: %s" % str(post_sea_bass))
     print("Salmon: %s" % str(post_salmon))
     print("----------------------------------------------------------------------------------------------------------")
@@ -53,11 +53,17 @@ def main():
     # Non informative posteriors
     print("----------------------------------------------------------------------------------------------------------")
     print("Non-Informative posteriors")
-    post_sea_bass_non_inf = clc.calc_posterior_non_inf(p_sea_bass, p_salmon)
-    post_salmon_non_inf = clc.calc_posterior_non_inf(p_salmon, p_sea_bass)
+    post_sea_bass_non_inf = ctrl.calc_posterior_non_inf(p_sea_bass, p_salmon)
+    post_salmon_non_inf = ctrl.calc_posterior_non_inf(p_salmon, p_sea_bass)
     print("Seabass: %s" % str(post_sea_bass_non_inf))
     print("Salmon: %s" % str(post_salmon_non_inf))
     print("----------------------------------------------------------------------------------------------------------")
+
+    # Create Groundtrough Vector
+    groundTruthVec = ctrl.create_ground_truth_vector(x_salmon, x_seabass)
+
+    bin = ctrl.identify_bin(total.get_bin_width(), 30.0, total.get_bin_center())
+    print bin
 
     # Plots
     if show_post_plots:
