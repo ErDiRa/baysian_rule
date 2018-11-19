@@ -8,7 +8,6 @@ class DataObject:
         self.dataset = dataset
         self.histogram, self.bins = clc.create_histogram(dataset, self.bin_size)
         self.bin_center = clc.calc_bin_centers(self.bins)
-        print self.bin_center
         self.bin_width = clc.calc_bin_width(self.bins)
         self.probabilities = clc.calc_probabilities(self.histogram, self.bin_width)
 

@@ -40,11 +40,43 @@ def create_ground_truth_vector(dataset1, dataset2):
     return concatenate_data_sets(np.zeros(len(dataset1)), np.ones(len(dataset2)))
 
 
-def identify_bin(bin_width,data_point, bin_centers):
+def identify_bin(bin_width, bin_centers, data_point):
     i = 0
     while i < len(bin_centers):
-        if data_point  <= bin_centers[i] + (bin_width/2):
+        if data_point <= bin_centers[i] + (bin_width / 2):
             break
         i += 1
 
+    if i == len(bin_centers):
+         i = i - 1
+
     return i
+
+
+def count_hits(acc_vec, val):
+    count = 0
+    for value in acc_vec:
+        if value == val:
+            count += 1
+    return count
+
+
+def train_model(posteriors, total_dataset, bin_width, bin_centers, gt_vec):
+    decision_vector = [None]*len(total_dataset)
+    accuracy_vector = [None]*len(total_dataset)
+    for i in range(0, len(total_dataset) - 1):
+        bin_index = identify_bin(bin_width, bin_centers, total_dataset[i])
+        if posteriors[bin_index] >= 0.5:  # ToDo: thresholdvalue must be trained
+            decision_vector[i] = 1
+        else:
+            decision_vector[i] = 0
+
+        if decision_vector[i] == gt_vec[i]:
+            accuracy_vector[i] = 1
+        else:
+            accuracy_vector[i] = 0
+
+    hits = count_hits(accuracy_vector, 1.0)
+    accuracy = float(hits) / len(accuracy_vector)
+
+    return accuracy

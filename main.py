@@ -34,10 +34,17 @@ def main():
     print("Salmon: %f" % sum_salmon)
     print("----------------------------------------------------------------------------------------------------------")
 
-    # ToDo: create ground truth vector
     # ToDo: calculate decision vector
     # ToDo: calculate Accuracy
     # ToDo: Test samples to trained Model
+
+    print("----------------------------------------------------------------------------------------------------------")
+    print("Probabilities")
+    p_sea_bass = sea_bass.get_probabilities()
+    p_salmon = salmon.get_probabilities()
+    print("Seabass: %s" % str(p_sea_bass))
+    print("Salmon: %s" % str(p_salmon))
+    print("----------------------------------------------------------------------------------------------------------")
 
     # Posteriors informative
     print("----------------------------------------------------------------------------------------------------------")
@@ -60,10 +67,17 @@ def main():
     print("----------------------------------------------------------------------------------------------------------")
 
     # Create Groundtrough Vector
-    groundTruthVec = ctrl.create_ground_truth_vector(x_salmon, x_seabass)
 
-    bin = ctrl.identify_bin(total.get_bin_width(), 30.0, total.get_bin_center())
-    print bin
+    ground_truth_vec = ctrl.create_ground_truth_vector(x_salmon, x_seabass)
+
+    # Train Model
+    print("----------------------------------------------------------------------------------------------------------")
+    print("Training of Model")
+    result_training = ctrl.train_model(post_salmon_non_inf, total.get_data_set(), salmon.get_bin_width(),
+                                       salmon.get_bin_center(), ground_truth_vec)
+
+    print("Accuracy: %s" % str(result_training))
+    print("----------------------------------------------------------------------------------------------------------")
 
     # Plots
     if show_post_plots:
